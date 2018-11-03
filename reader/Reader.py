@@ -6,6 +6,8 @@ Created on Sat Jul 17 09:54:59 2018
 @author: bruce
 """
 import xml.etree.ElementTree as ET 
+from pathlib import Path
+import numpy as np
 
 class Reader(object):
     def __init__(self,filename):
@@ -48,4 +50,4 @@ class Reader(object):
                 mass_list=np.tile(mass_list_frame,self.c_NumberFrames)
                 self.c_data.loc[:,"mass"]=mass_list
             if argii == "box":
-                self.c_BoxSize=np.array(self.read_xml(self.LogFilename,"box"),dtype=np.float64)
+                self.c_BoxSize=np.array(self.read_xml(self.LogFilename,"box")[0].split(),dtype=np.float64)

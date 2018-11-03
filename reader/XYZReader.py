@@ -32,9 +32,9 @@ class XYZReader(Reader):
         pass
 
     def read_NumberAtoms(self):
-        my_file = Path(self.filename)
+        my_file = Path(self.c_filename)
         if my_file.is_file():
-            with open(self.filename) as f:
+            with open(self.c_filename) as f:
                 reader=csv.reader(f)
                 for index,line in enumerate(reader):
                     line[0]=line[0].strip()
@@ -44,9 +44,9 @@ class XYZReader(Reader):
             print("error,XYZReader::read_NumberAtoms,file can not be found")
 
     def read_NumberFrames(self):
-        my_file = Path(self.filename)
+        my_file = Path(self.c_filename)
         if my_file.is_file():
-            f=open(self.filename)
+            f=open(self.c_filename)
             n_lines = sum(1 for line in f)
             f.close()
             self.c_NumberFrames=int(n_lines/(self.c_NumberAtoms+2))
@@ -54,10 +54,13 @@ class XYZReader(Reader):
             print("error,XYZReader::read_NumberFrames,file can not be found")
 
     def excute_Reader(self):
-        colume_name=["AtomType","x","y","z"]
+        colume_name=["type","x","y","z"]
         skip_list=create_list.pandas_skiplist(np.array([0,1]),self.c_NumberAtoms,self.c_NumberFrames)
-        data=pd.read_csv(self.filename,header=None,sep="\s+",skiprows=skip_list)
+        data=pd.read_csv(self.c_filename,header=None,sep="\s+",skiprows=skip_list)
         data=data.dropna(axis=1,how="any")
         data.columns=colume_name
         data[["x","y","z"]].astype("float64",copy=False)
         self.c_data=data
+        mass_list_frame=np.repeat(1.0,self.c_NumberAtoms)
+        mass_list=np.tile(mass_list_frame,self.c_NumberFrames)
+        self.c_data.loc[:,"mass"]=mass_list

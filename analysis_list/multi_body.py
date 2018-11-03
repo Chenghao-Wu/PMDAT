@@ -101,9 +101,9 @@ class MultiBody_List(object):
         self.check_if_combine_lists()
         c_data=self.c_data.loc[:,["x","y","z"]]
         c_data.astype("float64",copy=False)
-        c_data.loc[:,"x"]=self.c_data.loc[:,"x"]-np.round(self.c_data.loc[:,"x"]/self.System.c_AbsBoxSize[0])*self.System.c_AbsBoxSize[0]
-        c_data.loc[:,"y"]=self.c_data.loc[:,"y"]-np.round(self.c_data.loc[:,"y"]/self.System.c_AbsBoxSize[1])*self.System.c_AbsBoxSize[1]
-        c_data.loc[:,"z"]=self.c_data.loc[:,"z"]-np.round(self.c_data.loc[:,"z"]/self.System.c_AbsBoxSize[2])*self.System.c_AbsBoxSize[2]
+        c_data.loc[:,"x"]=self.c_data.loc[:,"x"]-np.round((self.c_data.loc[:,"x"]-(self.System.c_DataFrame.c_BoxSize[1]-self.System.c_AbsBoxSize[0]/2))/self.System.c_AbsBoxSize[0])*self.System.c_AbsBoxSize[0]
+        c_data.loc[:,"y"]=self.c_data.loc[:,"y"]-np.round((self.c_data.loc[:,"y"]-(self.System.c_DataFrame.c_BoxSize[3]-self.System.c_AbsBoxSize[1]/2))/self.System.c_AbsBoxSize[1])*self.System.c_AbsBoxSize[1]
+        c_data.loc[:,"z"]=self.c_data.loc[:,"z"]-np.round((self.c_data.loc[:,"z"]-(self.System.c_DataFrame.c_BoxSize[5]-self.System.c_AbsBoxSize[2]/2))/self.System.c_AbsBoxSize[2])*self.System.c_AbsBoxSize[2]
         return c_data
 
     def check_if_combine_lists(self):

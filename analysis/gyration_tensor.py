@@ -13,6 +13,7 @@ from analysis.analysis import *
 
 np.set_printoptions(precision=math_tool.data_precision)
 
+
 class gyration_tensor(Analysis):
 
     def __init__(self,List,filename):
@@ -35,8 +36,8 @@ class gyration_tensor(Analysis):
         
     def list_statickernel(self,time,current_trajectory):
         result=SpeciesLoop(self,current_trajectory)
-        result=np.sum(np.sum(result,axis=1),axis=0)
-        self.weighting[time]+=np.power(np.sum(self.List.System.SpeciesList[self.List.SpeciesName].AtomsList),2)*self.List.System.SpeciesList[self.List.SpeciesName].NumberSpecies
+        result=np.sum(np.sum(result,axis=1)/(np.power(np.sum(self.List.System.SpeciesList[self.List.SpeciesName].AtomsList),2)*2),axis=0)
+        self.weighting[time]+=self.List.System.SpeciesList[self.List.SpeciesName].NumberSpecies
         self.gyrationtensor[time]+=result
 
     def listkernel(self,atomii,Trj):

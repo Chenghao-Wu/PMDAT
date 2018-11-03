@@ -13,6 +13,7 @@ class Application(object):
         System.set_DataFrameIndex()
         System.calculate_TimeGap()
         System.check_SpeciesSetting()
+        System.check_TrjFormat()
         self.System=System
         self.AnalysisGroup=[]
     

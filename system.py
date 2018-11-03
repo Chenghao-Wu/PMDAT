@@ -114,7 +114,6 @@ class System(object):
 
         AtomIndex_frame=np.arange(self.c_DataFrame.c_NumberAtoms)
         AtomIndex=np.tile(AtomIndex_frame,self.c_DataFrame.c_NumberFrames)
-
         SpeciesTypeIndex_frame=[]
         for SpeciesTypeii in self.SpeciesList:
             SpeciesTypeLength=np.sum(self.SpeciesList[SpeciesTypeii].AtomsList)*self.SpeciesList[SpeciesTypeii].NumberSpecies
@@ -123,7 +122,6 @@ class System(object):
         SpeciesTypeIndex_frame=np.concatenate(SpeciesTypeIndex_frame,axis=0)
         
         SpeciesTypeIndex=np.tile(SpeciesTypeIndex_frame,self.c_DataFrame.c_NumberFrames)
-
         SpeciesIndex_frame=[]
         for SpeciesTypeii in self.SpeciesList:
             for Speciesii in range(self.SpeciesList[SpeciesTypeii].NumberSpecies):
@@ -134,7 +132,6 @@ class System(object):
         SpeciesIndex_frame=np.concatenate(SpeciesIndex_frame,axis=0)
         
         SpeciesIndex=np.tile(SpeciesIndex_frame,self.c_DataFrame.c_NumberFrames)
-        
         SpeciesAtomIndex_frame=[]
         for SpeciesTypeii in self.SpeciesList:
             for Speciesii in range(self.SpeciesList[SpeciesTypeii].NumberSpecies):
@@ -184,3 +181,14 @@ class System(object):
 
     def convert_WrapToUnwrap(self,dataframe):
         pass
+    
+    def check_TrjFormat(self):
+        columns=self.c_DataFrame.c_data.columns
+        if "ix" in columns and "iy" in columns and "iz" in columns:
+            pass
+        else:
+            image=np.repeat(np.repeat(0,self.c_DataFrame.c_NumberAtoms),self.c_DataFrame.c_NumberFrames)
+            self.c_DataFrame.c_data.loc[:,"ix"]=image
+            self.c_DataFrame.c_data.loc[:,"iy"]=image
+            self.c_DataFrame.c_data.loc[:,"iz"]=image
+

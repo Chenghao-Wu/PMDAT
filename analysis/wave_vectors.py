@@ -47,7 +47,7 @@ class WaveVector(object):
                 print("ERROR:wave_vector::__init__, Maximum length scale larger than smallest box dimension. Consider choosing a different maximum for wavevector decomposition.")
             min_size = MaxLengthScale
         if min_size == 0:
-            print("ERROR:wave_vector::__init__,min_size="+str(min_size))
+            print("ERROR:wave_vector::__init__, min_size="+str(min_size))
         self.wavegrid_spacing = 2.0*np.pi/min_size	    #define spacing to be given by wavenumber corresponding to smallest system dimension
         self.maxrange = self.wavegrid_spacing * 100.0		#wavevector grid 100 times this length in each direction from the origin
         self.delta_wavenumber = self.wavegrid_spacing/2.0	#define the thickness of the wavenumber bins to be half a gridspacing
