@@ -19,7 +19,7 @@ class Correlation_2d(object):
         self.correlation=np.zeros(0)
         self.filename=str(0)
         self.timetable=np.zeros(0)
-
+        self.weighting=np.zeros(self.List.System.c_NumberTimeGaps)
     def excute(self):
 
         self.excute_Analysis()
@@ -29,6 +29,8 @@ class Correlation_2d(object):
     
     def postprocess_list(self):
         for timeii in range(self.firsttime,self.lasttime+1):
-            self.correlation[timeii]/=(float(self.n_atoms_represented)*self.timegap_weighting[timeii])
+            #   print(self.correlation[timeii])
+            self.correlation[timeii]/=(float(self.n_atoms_represented)*self.weighting[timeii])
+            #print(self.correlation[timeii])
 
     

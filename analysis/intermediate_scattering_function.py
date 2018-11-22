@@ -22,7 +22,7 @@ class intermediate_scattering_function(Correlation_2d):
         self.filename=filename
         self.index=index
         self.fullblock=fullblock
-        self.timegap_weighting=self.List.System.TimeGapWeighting(fullblock)
+        self.weighting=np.zeros(self.List.System.c_NumberTimeGaps)
         self.WaveVector=WaveVector(self.List.System,plane,MaxLengthScale)
         self.correlation = np.zeros(self.List.System.c_NumberTimeGaps,dtype=np.float64)
         self.firsttime = 0
@@ -47,6 +47,7 @@ class intermediate_scattering_function(Correlation_2d):
         for vectorii in range(self.WaveVector.vectorcount(self.index)):
             tempcorrelation+=np.sum(np.cos(np.dot(nextii_array-thisii_array,self.WaveVector.vectorlist(self.index).loc[vectorii].values)))/self.WaveVector.vectorcount(self.index)
         self.correlation[timegap] += float(tempcorrelation)
+        self.weighting[timegap]+=1
     
     def write(self):
         CORRELATION_file=open(self.filename+".csv","w")

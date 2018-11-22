@@ -22,7 +22,7 @@ class vector_autocorrelation_function(Correlation_2d):
         self.filename=filename
         self.plane=plane
         self.fullblock=fullblock
-        self.timegap_weighting=self.List.System.TimeGapWeighting(fullblock)
+        self.weighting=np.zeros(self.List.System.c_NumberTimeGaps)
         self.correlation = np.zeros(self.List.System.c_NumberTimeGaps,dtype=np.float64)
         self.firsttime = 0
         self.lasttime = self.List.System.c_NumberTimeGaps-1
@@ -57,6 +57,7 @@ class vector_autocorrelation_function(Correlation_2d):
         else:
             print("\nERROR:vector_autocorrelation_function::list_displacementkernel, please set right plane")
         self.correlation[timegap] += float(tempcorrelation)
+        self.weighting[timegap]+=1
 
     def write(self):
         CORRELATION_file=open(self.filename+".csv","w")
