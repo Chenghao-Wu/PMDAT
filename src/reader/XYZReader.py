@@ -10,7 +10,7 @@ import pandas as pd
 import csv
 import pathlib
 
-from SMMSAT.src.reader import create_list 
+from SMMSAT.src.cython_func import create_list 
 from SMMSAT.src.reader.Reader import *
 
 class XYZReader(Reader):
