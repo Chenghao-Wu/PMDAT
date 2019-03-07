@@ -8,10 +8,10 @@ SMMSAT is written in python and accelerated by cython. SMMSAT can be run in term
 
 ## Prerequisites
 * It is fully tested within Anaconda5.3(python 3.7)
-* At least: cython, numpy, pandas, pathlib.
+* At least (external packages): cython, numpy, pandas, pathlib.
 
 ## Installing
-1. pip install SMMSAT or git clone https://github.com/Chenghao-Wu/SMMSAT.git
+1. git clone https://github.com/Chenghao-Wu/SMMSAT.git
 2. compile cython code, open terminal and run commands:
 ```bash
 cd ./SMMSAT/cython_func
@@ -99,10 +99,10 @@ Currently support: linear timeschmeme, exponential timeschmeme
 ### Analysis Block
 The third part of scripts is analysis block which is to specify the particle set and the analysis method on it.
 #### Selecting particle sets for analysis
-1. CreateList
+1. AtomList
 * create a list of particles for analysis based on the input parameter such as species, atom type and location within species
     ```
-    ListName=SMMSAT.CreateList(system)
+    ListName=SMMSAT.AtomList(system)
     ListName.create_list( <keyword>, <arguments>)
     ```
         keyword         arguments
@@ -118,14 +118,17 @@ The third part of scripts is analysis block which is to specify the particle set
         
         species         <species_name>
         * select all atoms in <species_name> in the system
-2. Multibody_List
+
+        index_atom      <species_name> <list_atom>
+        * select specified atoms in <species_name> in the system
+  
+1. MultiBodyList
 * create a list of "multibody"(particle set) for analysis such as center of mass motion and struture etc according to input parameters
     ```
-    MultibodyListName=SMMSAT.MultiBody_List(system)
-    MultibodyListName.create_MultiBodyList(<name_multibody>,<type>,<multibodymethod>,<keyword>,<argument>,<atom_list>)
+    MultibodyListName=SMMSAT.MultiBodyList(system)
+    MultibodyListName.create_MultiBodyList(<name_multibody>, <type> ,<keyword>, <argument>, <atom_list>)
     ```
     < name_multibody >: user-defined name for this multibody
-    < multibodymethod >: currently supports only "centroid"( calculate center of mass and vector of the particle's set)
 
         keyword         arguments
         
@@ -134,10 +137,22 @@ The third part of scripts is analysis block which is to specify the particle set
     < atom_list >: [atomtype, atom index,atomtype, atom index...]
 
 #### Analyzing trajectories of particle sets
-Every trajectory analysis method in SMMSAT needs a List of Particle sets and specific arguments for this method. 
+Every trajectory analysis method in SMMSAT needs a List of Particle sets and specific arguments for this method. 
+##### Dynamics
 1. mean_squared_displacement
 * calculate the mean squared displacement in 3 dimensions
-* msd = SMMSAT.mean_squared_displacement(< ListName >, < FileName >)
+* msd = SMMSAT.mean_squared_displacement(< ListName >, < FileName >, < AnalysisGeometry >)
+    * < ListNmae >: here types of msd for analysis is dependent on the list (species, all etc...) e.g.
+    ```python
+    #test mean squared displacement for inner beads
+    msd_inner=SMMSAT.mean_squared_displacement(indexatom_list,"test_msd_inner","xyz")
+    app.add(msd_inner)
+
+    #test mean squared displacement for all beads
+    msd=SMMSAT.mean_squared_displacement(all_list,"test_msd","xyz")
+    app.add(msd)
+    ```
+
 2. intermediate_sacttering_function
 * calculate the self-part intermediatescattering function
 * isfs = SMMSAT.intermediate_sacttering_function(< ListName >, < FileName >, < WaveVectorIndex >, < AnalysisGeometry >, < MaxLengthScale >, < fullblock=0 >)
@@ -145,34 +160,67 @@ The third part of scripts is analysis block which is to specify the particle set
     * < AnalysisGeometry >: xyz, xy, xz, yz, x, y, and z. This chooses which dimensions in k-space to include in the calculation of the intermediate scattering function. xyz computes the full radial three dimensional isf, xy, yz, and xz calculate two-dimensional in-plane radial isfs, and x, y, and z compute one-dimensional isfs.
     * < MaxLengthScale >: determines the longest distance which will be decomposed into inverse space. If a given distance is larger than smallest box size, the smallest box size will be taken as MaxLengthScale
     * < fullblock >: an optional argument that can be either 0 or 1. The default is 0, in which case time spacings spanning multiple blocks use only the first time of each block. A setting of 1 specifies that it should use all block times for times spanning blocks. This may result in substantial computational time increases but offers the possibility of modestly increased data quality at very long times.
-3. bond_autocorrelation_function
+    ```python
+    #test self-part intermediate scattering function
+    isfs=SMMSAT.intermediate_scattering_function(all_list,"test_isfs",26,"xyz",20)
+    app.add(isfs)
+    ```
+1. vector_autocorrelation_function
 * calculate the bond orientational autocorrelation function
-* baf = SMMSAT.bond_autocorrelation_function(< ListName >, < FileName >, < AnalysisGeometry >)
+* baf = SMMSAT.vector_autocorrelation_function(< ListName >, < FileName >, < AnalysisGeometry >)
+    * < ListName >: here < List > should be multibody list which includes the vector you are interested in
     * < AnalysisGeometry >: xyz, xy, xz, yz. This chooses which dimensions in real space to include in the calculation of the bond autocorrelation function. xyz computes the full radial three dimensional baf, xy, yz, and xz calculate two-dimensional in-plane radial baf.
-4. radial_distribution_function
+    ```python
+    #test end end vector autocorrelation function
+    ete_list=SMMSAT.MultiBodyList(sys)
+    ete_list.create_MultiBodyList("chain",1,"species_atomlist","polymer",[1,0,1,259])
+    ete_list.combine_multibody_lists("chain")
+    eeacf=SMMSAT.vector_autocorrelation_function(ete_list,"test_eeacf","xyz")
+    app.add(eeacf)
+    ```
+##### Statics
+1. radial_distribution_function
 * calculate the radial distribution function
 * rdf = SMMSAT.radial_distribution_function(< ListName >, < FileName >, < NumberBins >, < MaxLengthScale >)
     * < NumberBins >: number of bins to be used to do histogram calculation
     * < MaxLengthScale >: maximum length scale for rdf
-5. gyration_tensor
+    ```python
+    #test radial distribution function
+    rdf=SMMSAT.radial_distribution_function(all_list,"test_rdf",500,20)
+    app.add(rdf)
+    ```
+2. gyration_tensor
 * calculate gyration tensor
 * gyration_tensor = SMMSAT.gyration_tensor(< ListName >, < FileName >)
-    * < ListName >: here < List > should be the molecule species list e.g.: 
+    * < ListName >: here < List > should be type_species or species list of atoms e.g.:
     ```python
-    List_gyrationtensor=SMMSAT.CreateList(sys)
-    List_gyrationtensor.create_list("species","polymer")
+    #test gyration tensor
+    rg=SMMSAT.gyration_tensor(type_species_list,"test_rg")
+    app.add(rg)
     ```
-6. end_end_distance
+3. end_end_distance
 * calculate end to end distance
 * end_end_distance = SMMSAT.end_end_distance(< ListName >, < FileName >)
-    * < ListName >: here < List > should be the multibody list of chain end atoms e.g.:
+    * < ListName >: here < List > should be type_species or species list of atoms e.g.:
     ```python
-    ChainEnds=SMMSAT.MultiBody_List(sys)
-    ChainEnds.create_MultiBodyList("chainend",1,"centroid","species_atomlist","polymer",["S",0,"S",159])
-    ChainEnds.combine_multibody_lists("chainend")
+    #test end to end distance and distribution of it 
+    ete=SMMSAT.end_end_distance(type_species_list,"test_ete",calc_Dist=True)
+    app.add(ete)
     ```
-7. order_parameter
-* calculate structure orientation order paramter 
-* order_parameter = SMMSAT.order_parameter(< ListName >, < FileName >, < AnalysisGeometry >)
-    *  < ListName >: here < List > should be the multibody list of atoms within species to obtain the vector list
-    *  < AnalysisGeometry >: x, y and z. This chooses which direction in real space to calculate the relation orientation order parameter. x computes $\vec{r} * (1,0,0)$, y computes $\vec{r} * (0,1,0)$ and z computes $\vec{r} * (0,0,1)$
+4. mean_squared_internal_distance
+* calculate structure mean squared distance between two beads inside single molecule
+* msid = SMMSAT.mean_squared_internal_distance(< ListName >, < FileName >)
+    *  < ListName >: here < List > should be the type_species or species list of atoms e.g.
+    ```python
+    #test mean squared internal distance
+    msid=SMMSAT.mean_squared_internal_distance(type_species_list,"test_msid")
+    app.add(msid)
+    ```
+
+## Version Updates
+### V0.2
+1. Optimize algorithms of structure analysis(end to end distance, gyration tensor, mean squared internal distance) to purely matrix calculation and facilitated with 10 times speed.
+2. Add new structure analysis method: mean squared internal distance which characterizes the length scale of each pair of beads in single molecule and it is usually used for checking the equilibration in structure of long chain polymer system.
+3. Add new selection of atoms in AtomList, which is able to make it feasible to analyze any part of the chains.
+4. Rewrite multibody list to make it easier for reading and obtain more memory efficiency.
+5. Modified several terms of object to make it consistent in this toolkit.

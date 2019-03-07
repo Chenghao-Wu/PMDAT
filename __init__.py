@@ -7,24 +7,26 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
 root_dir = dir_path.replace("/util", '', 1)
 sys.path.insert(0, root_dir)
 
-from reader.Reader import *
-from reader.LAMMPSReader import *
-from reader.XYZReader import *
+from src.reader.Reader import *
+from src.reader.LAMMPSReader import *
+from src.reader.XYZReader import *
 
-from analysis_list.build_list import *
-from analysis_list.multi_body import *
-from system import *
-from application import *
+from src.utility.system import *
+from src.utility.application import *
 
-from analysis.analysis import *
-from analysis.mean_squared_displacement import *
-from analysis.radial_distribution_function import *
-from analysis.wave_vectors import *
-from analysis.intermediate_scattering_function import *
-from analysis.end_end_distance import *
-from analysis.gyration_tensor import *
-from analysis.vector_autocorrelation_function import *
-from analysis.bond_autocorrelation_function import *
-from analysis.order_parameter import *
+from src.list.multibody_list import *
+from src.list.atom_list import *
+
+from src.method.analysis import *
+from src.method.wave_vectors import *
+
+from src.method.dynamics.mean_squared_displacement import *
+from src.method.dynamics.intermediate_scattering_function import *
+from src.method.dynamics.vector_autocorrelation_function import *
+
+from src.method.statics.radial_distribution_function import *
+from src.method.statics.end_end_distance import *
+from src.method.statics.gyration_tensor import *
+from src.method.statics.mean_squeared_internal_distance import *
 
 print("Soft Matter Molecular Simulation Analysis Tool(SMMSAT) version "+System.Version)
