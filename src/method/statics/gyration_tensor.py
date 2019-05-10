@@ -24,7 +24,7 @@ class gyration_tensor(Analysis):
         self.filename=filename
         self.SpeciesName=self.List.SpeciesName
 
-        self.NumberSpeciesAtoms=np.sum(self.List.System.sys_SpeciesDict[self.SpeciesName].AtomsList)
+        self.NumberSpeciesAtoms=self.List.selectedspecieslength
         self.NumberSpecies=self.List.System.sys_SpeciesDict[self.SpeciesName].NumberSpecies
 
         self.weighting=np.zeros(self.List.System.get_NumberBlocks)

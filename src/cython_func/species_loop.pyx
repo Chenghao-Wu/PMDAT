@@ -20,7 +20,7 @@ def SpeciesLoop(analysis,Trj):
     cdef int startii
     cdef int endii
     cdef Py_ssize_t NumberSpecies=analysis.List.System.sys_SpeciesDict[analysis.SpeciesName].NumberSpecies
-    cdef Py_ssize_t n_atoms=np.sum(analysis.List.System.sys_SpeciesDict[analysis.SpeciesName].AtomsList)
+    cdef Py_ssize_t n_atoms=analysis.List.selectedspecieslength
     cdef np.ndarray SpeciesTrj=np.zeros([n_atoms,3],dtype=np.float64)
     result=[]
     for speciesii in range(NumberSpecies):

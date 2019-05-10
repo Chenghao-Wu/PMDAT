@@ -31,11 +31,11 @@ class Reader(object):
         root = tree.getroot()
         arg_list=[argii.text for argii in root.iter(arg)][0].split("\n")[1:-1]
         return arg_list
-    
+    """
     def set_ReadLog(self,*arg):
-        """
+        
         Log file is xml format
-        """
+        
         if self.LogFilename==None:
             print("ERROR:Reader::set_ReadLog, Please set the LogFile Name")
             self.ReadLog=True
@@ -51,3 +51,4 @@ class Reader(object):
                 self.c_data.loc[:,"mass"]=mass_list
             if argii == "box":
                 self.c_BoxSize=np.array(self.read_xml(self.LogFilename,"box")[0].split(),dtype=np.float64)
+    """

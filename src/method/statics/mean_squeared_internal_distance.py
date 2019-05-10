@@ -21,7 +21,7 @@ class mean_squared_internal_distance(Analysis):
         self.SpeciesName=self.List.SpeciesName
 
         #constructor:
-        self.NumberSpeciesAtoms=np.sum(self.List.System.sys_SpeciesDict[self.SpeciesName].AtomsList)
+        self.NumberSpeciesAtoms=self.List.selectedspecieslength
         self.NumberSpecies=self.List.System.sys_SpeciesDict[self.SpeciesName].NumberSpecies
 
         self.MSID=np.zeros(self.NumberSpeciesAtoms,dtype=np.float32)

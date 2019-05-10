@@ -21,7 +21,7 @@ class end_end_distance(Analysis):
         self.filename=filename
         self.SpeciesName=self.List.SpeciesName
         self.NumberSpecies=self.List.System.sys_SpeciesDict[self.SpeciesName].NumberSpecies
-        self.SpeciesLength=np.sum(self.List.System.sys_SpeciesDict[self.SpeciesName].AtomsList)
+        self.SpeciesLength=self.List.selectedspecieslength
         self.SpeciesIndex=list(self.List.System.sys_SpeciesDict.keys()).index(self.SpeciesName)
         
         #constructor:

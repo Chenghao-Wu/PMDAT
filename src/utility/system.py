@@ -22,7 +22,7 @@ class System(object):
     MAX_NumberSpecies=10
     displacement_limit=0
     Species_count=0
-    Version="v0.1"
+    Version="v0.2"
 
 
 #   system parameters
@@ -38,9 +38,12 @@ class System(object):
         self.sys_NumberTimeGaps   =   0
         self.sys_TimeSchemeType   =   0
         self.sys_TimeGapTable          =   np.zeros(1)
-        self.sys_AbsBoxSize       =   np.array([self.sys_Reader.sys_BoxSize[1]-self.sys_Reader.sys_BoxSize[0],self.sys_Reader.sys_BoxSize[3]-self.sys_Reader.sys_BoxSize[2],self.sys_Reader.sys_BoxSize[5]-self.sys_Reader.sys_BoxSize[4]])
         self.sys_data=Reader.sys_data
-        self.build_UnwrapPos()
+        self.sys_AbsBoxSize       =   np.array([self.sys_Reader.sys_BoxSize[1]-self.sys_Reader.sys_BoxSize[0],self.sys_Reader.sys_BoxSize[3]-self.sys_Reader.sys_BoxSize[2],self.sys_Reader.sys_BoxSize[5]-self.sys_Reader.sys_BoxSize[4]])
+        if Reader.TrajectoryFormat=="lammps":
+            self.build_UnwrapPos()
+        elif Reader.TrajectoryFormat=="xyz":
+            self.build_PeriodicImage()
         
 
 #   get function for properties in analysis systems
@@ -135,7 +138,7 @@ class System(object):
             if atomtypeii in self.sys_Reader.sys_data.loc[:,"type"].values:
                 continue
             else:
-                print("\nERROR:System::check_SpeciesSetting, "+atomtypeii+" is not in Trj file")
+                print("\nERROR:System::check_SpeciesSetting, "+str(atomtypeii)+" is not in Trj file")
                 break
 
     def check_TrjFormat(self):
@@ -146,6 +149,15 @@ class System(object):
             image=np.repeat(np.repeat(0,self.sys_Reader.sys_NumberAtoms),self.sys_Reader.sys_NumberFrames)
             self.sys_Reader.sys_data.loc[:,["ix","iy","iz"]]=image
 
+    def build_PeriodicImage(self):
+        self.sys_data["unwrap_x"]=self.sys_data["x"]
+        self.sys_data["unwrap_y"]=self.sys_data["y"]
+        self.sys_data["unwrap_z"]=self.sys_data["z"]
+        if not self.sys_Reader.Type=="tensor":
+            self.sys_data[["ix","iy","iz"]]=np.round((self.sys_data[["x","y","z"]]-(self.get_BoxSize[[1,3,5]]-self.get_AbsBoxSize[[0,1,2]]/2))/self.get_AbsBoxSize[[0,1,2]])
+            ModificationSymmetricAxis=np.array([(self.get_BoxSize[1]+self.get_BoxSize[0])/2,(self.get_BoxSize[3]+self.get_BoxSize[2])/2,(self.get_BoxSize[5]+self.get_BoxSize[4])/2])
+            self.sys_data[["x","y","z"]]=pd.DataFrame(self.sys_data[["unwrap_x","unwrap_y","unwrap_z"]].values-self.sys_data[["ix","iy","iz"]].values*self.get_AbsBoxSize[[0,1,2]]+ModificationSymmetricAxis,columns=["x","y","z"],index=self.sys_data.index)
+    
     def build_UnwrapPos(self):
         self.sys_data["unwrap_x"]=self.sys_data["ix"]*self.sys_AbsBoxSize[0]+self.sys_data["x"]
         self.sys_data["unwrap_y"]=self.sys_data["iy"]*self.sys_AbsBoxSize[1]+self.sys_data["y"]

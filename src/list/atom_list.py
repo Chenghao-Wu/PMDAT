@@ -29,10 +29,17 @@ class AtomList(object):
 #           Selects atoms of type atom_type in species species_name
             self.AtomListType="type_species"
             self.SpeciesName=keyword[1]
-            self.AtomType=keyword[2]
-            self.sys_data=self.System.sys_data.loc[pd.IndexSlice[:,self.SpeciesName,:,:,:],:].loc[self.System.sys_data["type"]==self.AtomType]
+            if isinstance(keyword[2],list):
+                self.AtomType=keyword[2]
+            else:
+                self.AtomType=[keyword[2]]
+            atomselection=0
+            for type_speciessii in self.AtomType:
+                atomselection=np.logical_or(self.System.sys_data["type"]==type_speciessii,atomselection)
+            self.sys_data=self.System.sys_data.loc[pd.IndexSlice[:,self.SpeciesName,:,:,:],:].loc[atomselection]
             self.wrap_pos=self.sys_data[["x","y","z"]]
             self.unwrap_pos=self.sys_data[["unwrap_x","unwrap_y","unwrap_z"]]
+            self.selectedspecieslength=self.sys_data.loc[pd.IndexSlice[0,self.SpeciesName,0,:,:],:].shape[0]
         elif keyword[0]=="species":
 #           Selects all atoms within species species_name
             self.AtomListType="species"
@@ -41,7 +48,7 @@ class AtomList(object):
             self.sys_NumberAtomPerChain=sum(self.System.sys_SpeciesDict[self.SpeciesName].AtomsList)
             self.wrap_pos=self.sys_data[["x","y","z"]]
             self.unwrap_pos=self.sys_data[["unwrap_x","unwrap_y","unwrap_z"]]
-
+            self.selectedspecieslength=self.sys_data.loc[pd.IndexSlice[0,self.SpeciesName,0,:,:],:].shape[0]
         elif keyword[0] == "index_atom":
             self.AtomListType="index_atom"
             self.SpeciesName=keyword[1]

@@ -58,9 +58,13 @@ class MultiBodyList(object):
             MultiBodyList_sys_data=[self.sys_MultiBodies[multibodyii].sys_data for multibodyii in arg]
             self.sys_data=pd.concat(MultiBodyList_sys_data,axis=0)
             self.sys_data.sort_index(level=0,axis=0,inplace=True)
+            self.wrap_pos=self.sys_data[["x","y","z"]]
+            self.unwrap_pos=self.sys_data[["unwrap_x","unwrap_y","unwrap_z"]]
         else:
             multibody=self.sys_MultiBodyList[0]
             self.sys_data=self.sys_MultiBodies[multibody].sys_data
+            self.wrap_pos=self.sys_data[["x","y","z"]]
+            self.unwrap_pos=self.sys_data[["unwrap_x","unwrap_y","unwrap_z"]]
 
     #check setting
     def check_MultibodyArg(self,arg):

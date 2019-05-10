@@ -17,7 +17,8 @@ from SMMSAT.src.reader.Reader import *
 
 class LAMMPSReader(Reader):
 
-    def __init__(self,filename,start=0,LogFilename=None):
+    def __init__(self,filename,start=0,mass={}):
+        self.TrajectoryFormat="lammps"
         self.sys_NumberAtoms=0
         self.sys_NumberFrames=0
         self.start=start
@@ -29,11 +30,7 @@ class LAMMPSReader(Reader):
         self.read_NumberFrames()
         self.read_customformat()
         self.excute_Reader()
-        self.LogFilename=LogFilename
-        if self.LogFilename==None:
-            self.ReadLog=False
-        else:
-            self.ReadLog=True
+        self.sys_Mass=mass
 
     def set_BoxSize(self):
         my_file = Path(self.sys_filename)
@@ -109,7 +106,7 @@ class LAMMPSReader(Reader):
         skipframes=np.arange((self.sys_NumberAtoms+9)*self.start)
         skip_list=create_list.pandas_skiplist(np.array([0,1,2,3,4,5,6,7,8]),self.sys_NumberAtoms,self.sys_NumberFrames)
         skip_list=np.unique(list(skipframes)+list(skip_list))
-        print(skip_list)
+        #print(skip_list)
         self.sys_NumberFrames=self.sys_NumberFrames-self.start
         data=pd.read_csv(self.sys_filename,header=None,sep="\s+",skiprows=list(skip_list))
         data=data.dropna(axis=1,how="any")
