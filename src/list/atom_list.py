@@ -56,7 +56,10 @@ class AtomList(object):
             self.sys_data=self.System.sys_data.loc[pd.IndexSlice[:,self.SpeciesName,:,self.index_atom,:],:]
             self.wrap_pos=self.sys_data[["x","y","z"]]
             self.unwrap_pos=self.sys_data[["unwrap_x","unwrap_y","unwrap_z"]]
-            self.selectedspecieslength=self.index_atom.shape[0]
+            if  type(self.index_atom)==list:
+                self.selectedspecieslength=len(self.index_atom)
+            else:
+                self.selectedspecieslength=self.index_atom.shape[0]
         else:
             print("\nERROR:List::create_list, Please set correct keyword\n")
         
