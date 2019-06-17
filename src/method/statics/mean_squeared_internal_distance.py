@@ -12,14 +12,14 @@ from SMMSAT.src.method.analysis import *
 
 class mean_squared_internal_distance(Analysis):
 
-    def __init__(self,List,filename):
+    def __init__(self,List,filename,fulltrj=False):
         self.List=List
         if not List.AtomListType ==  "species" and not List.AtomListType ==  "type_species":
             print("ERROR::mean_squared_internal_distance: Please choose ListType = type_species")
             return None
         self.filename=filename
         self.SpeciesName=self.List.SpeciesName
-
+        self.fulltrj=fulltrj
         #constructor:
         self.NumberSpeciesAtoms=self.List.selectedspecieslength
         self.NumberSpecies=self.List.System.sys_SpeciesDict[self.SpeciesName].NumberSpecies

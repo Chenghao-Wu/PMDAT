@@ -11,7 +11,7 @@ from SMMSAT.src.cython_func.atom_loop import *
 from SMMSAT.src.method.analysis import *
 
 class radial_distribution_function(Analysis):
-    def __init__(self,List,filename,n_bins,MaxDistance,SwitchIntermolecule=False):
+    def __init__(self,List,filename,n_bins,MaxDistance,SwitchIntermolecule=False,fulltrj=False):
         self.List=List
         self.filename=filename
         self.n_bins=n_bins
@@ -21,7 +21,7 @@ class radial_distribution_function(Analysis):
             self.MaxDistance=MaxDistance
         else:
             self.MaxDistance=min(self.List.System.get_AbsBoxSize[0],self.List.System.get_AbsBoxSize[1],self.List.System.get_AbsBoxSize[2])/2
-        
+        self.fulltrj=fulltrj
         self.dr=self.MaxDistance/self.n_bins
         self.hist_bins=[self.dr*i for i in range(n_bins+1)]
         self.rdf=np.zeros(self.List.System.get_NumberBlocks,dtype=np.ndarray)

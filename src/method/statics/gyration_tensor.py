@@ -15,7 +15,7 @@ np.set_printoptions(precision=math_tool.data_precision)
 
 class gyration_tensor(Analysis):
 
-    def __init__(self,List,filename):
+    def __init__(self,List,filename,fulltrj=False):
         self.List=List
         if not List.AtomListType ==  "species" and not List.AtomListType ==  "type_species":
             print("ERROR::mean_squared_internal_distance: Please choose ListType = type_species")
@@ -27,8 +27,14 @@ class gyration_tensor(Analysis):
         self.NumberSpeciesAtoms=self.List.selectedspecieslength
         self.NumberSpecies=self.List.System.sys_SpeciesDict[self.SpeciesName].NumberSpecies
 
-        self.weighting=np.zeros(self.List.System.get_NumberBlocks)
-        self.gyrationtensor=np.zeros(self.List.System.get_NumberBlocks,dtype=np.ndarray)
+        self.fulltrj=fulltrj
+        if fulltrj==False:
+            self.gyrationtensor=np.zeros(self.List.System.get_NumberBlocks+1,dtype=np.ndarray)
+            self.weighting=np.zeros(self.List.System.get_NumberBlocks+1)
+        elif fulltrj==True:
+            self.gyrationtensor=np.zeros(self.List.System.sys_NumberSteps,dtype=np.ndarray)
+            self.weighting=np.zeros(self.List.System.sys_NumberSteps,dtype=np.ndarray)
+
         print("\nInitializing Gyration Tensor "+str(self.SpeciesName))
 
     def excute_Analysis(self):

@@ -11,58 +11,41 @@ import numpy as np
 from SMMSAT.src.method.analysis import *
 from SMMSAT.src.cython_func.block_loop import *
 import sys
-class end_end_distance(Analysis):
 
-    def __init__(self,List,filename,calc_Dist=False,fulltrj=False):
+class mean_path(Analysis):
+
+    def __init__(self,List,filename,avg_time):
         self.List=List
-        print(List.AtomListType)
-        if not List.AtomListType ==  "index_atom" and not List.AtomListType ==  "type_species":
-            print("ERROR::end_end_distance: Please choose ListType = type_species")
+        if not List.AtomListType ==  "species" and not List.AtomListType ==  "type_species":
+            print("ERROR::mean_path: Please choose ListType = type_species")
             sys.exit(2)
         self.filename=filename
         self.SpeciesName=self.List.SpeciesName
         self.NumberSpecies=self.List.System.sys_SpeciesDict[self.SpeciesName].NumberSpecies
         self.SpeciesLength=self.List.selectedspecieslength
         self.SpeciesIndex=list(self.List.System.sys_SpeciesDict.keys()).index(self.SpeciesName)
-
-        self.fulltrj=fulltrj
+        self.avg_time=avg_time
         #constructor:
-        if self.fulltrj==False:
-            self.weighting=np.zeros(self.List.System.get_NumberBlocks+1)
-            self.EndEndDistance=np.zeros(self.List.System.get_NumberBlocks+1)
-        elif self.fulltrj==True:
-            self.weighting=np.zeros(self.List.System.get_NumberSteps)
-            self.EndEndDistance=np.zeros(self.List.System.get_NumberSteps,dtype=np.float32)
-        self.Dist_EndtoEndDistance=np.zeros(self.List.System.get_NumberSteps,dtype=np.ndarray)
-        self.Bins_EndtoEndDistance=np.arange(np.sum(self.List.System.sys_SpeciesDict[self.SpeciesName].AtomsList)*1.3+1000*(1/(np.sum(self.List.System.sys_SpeciesDict[self.SpeciesName].AtomsList))))
-        
-        self.calc_Dist=calc_Dist
-
-        if self.calc_Dist == True: 
-            print("\nInitializing End to End Distance with Distribution "+str(self.SpeciesName))
-        elif self.calc_Dist == False:
-            print("\nInitializing End to End Distance "+str(self.SpeciesName))
+        self.weighting=np.zeros(self.List.System.get_NumberSteps)
+    
+        print("\nInitializing Mean Path "+str(self.SpeciesName))
 
     def excute_Analysis(self):
-        print("\nCalculating end to end distance.\n")
+        print("\nCalculating Mean Path distance.\n")
         start=time.time()
         block_loop(self,self.List.unwrap_pos)
         self.postprocess_list()
         self.write()
-        print("Writing end to end distance to file "+self.filename)
+        print("Writing Mean Path distance to file "+self.filename)
         end=time.time()
-        print("\nCalculated end end distance in " +"{0:.2f}".format(end-start) +" seconds.")
+        print("\nCalculated Mean Path in " +"{0:.2f}".format(end-start) +" seconds.")
 
     def list_statickernel(self, blockii, current_trajectory):
-        #print(self.SpeciesLength,blockii)
         distance=np.zeros(self.NumberSpecies)
         for monomerii in range(self.NumberSpecies):
             distance_monomer=np.linalg.norm(current_trajectory[self.SpeciesLength*monomerii:self.SpeciesLength+self.SpeciesLength*monomerii][-1]-current_trajectory[self.SpeciesLength*monomerii:self.SpeciesLength+self.SpeciesLength*monomerii][0])
             distance[monomerii]=distance_monomer
         self.EndEndDistance[blockii]+=np.mean(distance)
-        if self.calc_Dist==True:
-            Dist,Bins=np.histogram(distance,bins=self.Bins_EndtoEndDistance,density=True)
-            self.Dist_EndtoEndDistance[blockii]+=Dist
         
     def postprocess_list(self):
         if self.calc_Dist==True:
