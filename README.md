@@ -1,6 +1,7 @@
 # Soft Matter Molecular Simulation Analysis Toolkit(SMMSAT)
 
 ## Overview
+
 ### Capabilities
 SMMSAT is a toolkit of analysis methods for molecular simulation of Soft Matter(Polymer, liquid etc.). Currently, it can read file format such as .lammpstrj, .xyz, .xml, the format of trajectory file may affect commands of analysis method in input file. The most stable file format at present is .lammpstrj output by LAMMPS CUSTOM command ( with pbc image). SMMSAT enables selection of user-defined sets of particles, which is called " multibody" in SMMSAT and therefore analysis of properties of the multibody's center of mass such static structure, vector correlation, center of mass motion etc. SMMSAT is presently in intensive developing and updating within adding new analysis methods, speed optimization, and stability testing. If you met any questions or bugs or have additional functionality requests, please contact Zhenghao w415146142@gmail.com.
 ### General Concepts and Terminology
@@ -165,7 +166,7 @@ Every trajectory analysis method in SMMSAT needs a List of Particle sets and spe
     isfs=SMMSAT.intermediate_scattering_function(all_list,"test_isfs",26,"xyz",20)
     app.add(isfs)
     ```
-1. vector_autocorrelation_function
+3. vector_autocorrelation_function
 * calculate the bond orientational autocorrelation function
 * baf = SMMSAT.vector_autocorrelation_function(< ListName >, < FileName >, < AnalysisGeometry >)
     * < ListName >: here < List > should be multibody list which includes the vector you are interested in
@@ -218,9 +219,12 @@ Every trajectory analysis method in SMMSAT needs a List of Particle sets and spe
     ```
 
 ## Version Updates
+
 ### V0.2
 1. Optimize algorithms of structure analysis(end to end distance, gyration tensor, mean squared internal distance) to purely matrix calculation and facilitated with 10 times speed.
 2. Add new structure analysis method: mean squared internal distance which characterizes the length scale of each pair of beads in single molecule and it is usually used for checking the equilibration in structure of long chain polymer system.
 3. Add new selection of atoms in AtomList, which is able to make it feasible to analyze any part of the chains.
 4. Rewrite multibody list to make it easier for reading and obtain more memory efficiency.
 5. Modified several terms of object to make it consistent in this toolkit.
+
+
