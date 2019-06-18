@@ -59,7 +59,7 @@ class gyration_tensor(Analysis):
         return S
 
     def postprocess_list(self):
-        for timeii in range(self.List.System.get_NumberBlocks):
+        for timeii in range(self.weighting.shape[0]):
             self.gyrationtensor[timeii]/=(float(self.weighting[timeii]))
         
     def write(self):
