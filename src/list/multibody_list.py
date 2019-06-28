@@ -75,7 +75,7 @@ class MultiBodyList(object):
 
     def check_SpeciesType(self,SpeciesName,species_atomlist,species_typelist,arg):
         
-        if species_typelist==list(self.System.sys_data.loc[pd.IndexSlice[:,SpeciesName,0,species_atomlist,:],:].loc[0,"type"]):
+        if list(species_typelist)==list(self.System.sys_data.loc[pd.IndexSlice[:,SpeciesName,0,species_atomlist,:],:].loc[0,"type"]):
             pass
         else:
             sys.exit(2)
