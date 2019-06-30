@@ -28,8 +28,8 @@ class end_end_distance(Analysis):
         self.fulltrj=fulltrj
         #constructor:
         if self.fulltrj==False:
-            self.weighting=np.zeros(self.List.System.get_NumberBlocks+1)
-            self.EndEndDistance=np.zeros(self.List.System.get_NumberBlocks+1)
+            self.weighting=np.zeros(self.List.System.get_NumberBlocks)
+            self.EndEndDistance=np.zeros(self.List.System.get_NumberBlocks)
         elif self.fulltrj==True:
             self.weighting=np.zeros(self.List.System.get_NumberSteps)
             self.EndEndDistance=np.zeros(self.List.System.get_NumberSteps,dtype=np.float32)

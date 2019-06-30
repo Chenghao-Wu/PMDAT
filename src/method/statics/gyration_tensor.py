@@ -29,8 +29,8 @@ class gyration_tensor(Analysis):
 
         self.fulltrj=fulltrj
         if fulltrj==False:
-            self.gyrationtensor=np.zeros(self.List.System.get_NumberBlocks+1,dtype=np.ndarray)
-            self.weighting=np.zeros(self.List.System.get_NumberBlocks+1)
+            self.gyrationtensor=np.zeros(self.List.System.get_NumberBlocks,dtype=np.ndarray)
+            self.weighting=np.zeros(self.List.System.get_NumberBlocks)
         elif fulltrj==True:
             self.gyrationtensor=np.zeros(self.List.System.sys_NumberSteps,dtype=np.ndarray)
             self.weighting=np.zeros(self.List.System.sys_NumberSteps,dtype=np.ndarray)
