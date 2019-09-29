@@ -54,7 +54,7 @@ class WaveVector(object):
         self.wavegrid_spacing = 2.0*np.pi/min_size	    #define spacing to be given by wavenumber corresponding to smallest system dimension
         self.maxrange = self.wavegrid_spacing * 100.0		#wavevector grid 100 times this length in each direction from the origin
         self.delta_wavenumber = self.wavegrid_spacing/2.0	#define the thickness of the wavenumber bins to be half a gridspacing
-        self.NumberWaveNumbers=99
+        self.NumberWaveNumbers=299
         self.wavevector=[]
         self.approx_wavenumber=[]
         for wavenumberii in range(self.NumberWaveNumbers):
