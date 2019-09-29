@@ -18,7 +18,7 @@ class WaveVector(object):
         self.System=System
         self.plane=plane
         min_size=float(0)
-        if MaxLengthScale<0:
+        if MaxLengthScale<=0:
             print("ERROR:wave_vector::__init__, Maximum lengthscale for wavevector decomposition <= 0; defaulting to box size.\n")
             if plane=="xy":
                 if self.System.get_AbsBoxSize[0]<self.System.get_AbsBoxSize[1]:
