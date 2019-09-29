@@ -35,7 +35,7 @@ from src.method.statics.mean_squeared_internal_distance import *
 from src.method.statics.structure_factor import *
 
 
-from pyZ1.pyZ1 import *
+#from pyZ1.pyZ1 import *
 
 
 
